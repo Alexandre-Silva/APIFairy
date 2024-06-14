@@ -47,6 +47,27 @@ def _annotate(f, **kwargs):
     for key, value in kwargs.items():
         f._spec[key] = value
 
+def _get_schema(f, schema, rv):
+    if rv[1] == f._spec['status_code']:
+        return schema
+
+    if 'other_responses' not in f._spec:
+        return schema
+
+    if rv[1] not in f._spec['other_responses']:
+        return schema
+
+    other = f._spec['other_responses'][rv[1]]
+    if isinstance(other, str):
+        return schema
+    elif isinstance(other, tuple) and len(other) >= 2 and not isinstance(other[0], str):
+        return other[0]
+    elif isinstance(other, tuple) and len(other) >= 2 and not isinstance(other[1], str):
+        return other[1]
+    else:
+        return other
+
+# end changed
 
 def authenticate(auth, **kwargs):
     def decorator(f):
@@ -120,7 +141,13 @@ def response(schema, status_code=200, description=None, headers=None):
                     if not isinstance(rv[1], int):
                         rv = (json, status_code, rv[1])
                     else:
+                        other_schema = _get_schema(f, schema, rv)
+                        json = other_schema.jsonify(rv[0])
                         rv = (json, rv[1])
+                elif len(rv) >= 3 and isinstance(rv[1], int):
+                    other_schema = _get_schema(f, schema, rv)
+                    json = other_schema.jsonify(rv[0])
+                    rv = (json, rv[1], rv[2])
                 elif len(rv) >= 3:
                     rv = (json, rv[1], rv[2])
                 else:
