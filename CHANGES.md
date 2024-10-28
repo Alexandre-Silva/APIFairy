@@ -1,5 +1,9 @@
 # APIFairy Change Log
 
+**Release 1.4.2** - 2024-10-28
+
+- workaround: when an endpoint returns a Reponse then simply return that instead of raising an Exception ([commit](https://github.com/miguelgrinberg/apifairy/commit/8725ad0dfb69d4bdb42b0d1cd8f487126f3e0d84)) (thanks **Alexandre-Silva**!)
+
 **Release 1.4.0** - 2024-01-15
 
 - Remove use of deprecated `flask.__version__` ([commit](https://github.com/miguelgrinberg/apifairy/commit/a21ecba2fc6dbcdbb7e25c44933116bcaea8aaa4))
