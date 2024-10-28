@@ -133,8 +133,8 @@ def response(schema, status_code=200, description=None, headers=None):
         def _response(*args, **kwargs):
             rv = f(*args, **kwargs)
             if isinstance(rv, Response):  # pragma: no cover
-                raise RuntimeError(
-                    'The @response decorator cannot handle Response objects.')
+                return rv
+                raise RuntimeError( 'The @response decorator cannot handle Response objects.')
             if isinstance(rv, tuple):
                 json = schema.jsonify(rv[0])
                 if len(rv) == 2:
